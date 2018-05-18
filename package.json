@@ -1,0 +1,82 @@
+{
+  "name": "aws-lightsail",
+  "version": "1.0.0",
+  "description": "A microservice for AWS lightsail.",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "eslint": "semistandard  --verbose | snazzy",
+    "test": "node tests/test.js",
+    "testcov": "nyc mocha"
+  },
+  "lambda_memory": 512,
+  "lambda_timeout": 42,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alaninchika/aws-lightsail.git"
+  },
+  "keywords": [
+    "AWS",
+    "Amazon",
+    "Lambda",
+    "Lightsail",
+    "function",
+    "api-gateway",
+    "aws-lambda",
+    "aws-lightsail",
+    "cloudformation",
+    "microservice"
+  ],
+  "author": "Alan Koroma",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/alaninchika/aws-lightsail/issues"
+  },
+  "homepage": "https://github.com/alaninchika/aws-lightsail#readme",
+  "devDependencies": {
+    "aguid": "^2.0.0",
+    "eslint": "^4.3.0",
+    "git-rev": "^0.2.1",
+    "mocha": "^5.0.1",
+    "nyc": "^11.4.1",
+    "sinon": "^1.17.2",
+    "tape": "^4.2.2"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.149.0",
+    "axios": "^0.16.2"
+  },
+  "semistandard": {
+    "rules": {
+      "no-multi-spaces": [
+        2,
+        {
+          "exceptions": {
+            "VariableDeclarator": true
+          }
+        }
+      ],
+      "brace-style": [
+        2,
+        "stroustrup",
+        {
+          "allowSingleLine": true
+        }
+      ],
+      "no-trailing-spaces": 0
+    },
+    "globals": [
+      "describe",
+      "it",
+      "before",
+      "after",
+      "afterEach"
+    ]
+  },
+  "pre-commit": [
+    "eslint",
+    "check-coverage"
+  ]
+}
