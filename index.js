@@ -28,6 +28,31 @@ const startLightsailServer = (name, cb) => {
     });
 };
 
+const stopLightsailServer = (name, cb) => {
+
+    let lightsail = new AWS.Lightsail();
+
+    let params = {
+        instanceName: name
+    };
+
+    lightsail.stopInstance(params, function(err, data) {
+        if (err) {
+            console.log(err);
+            cb(err, []);
+        } else {
+
+            let results = {
+                id: data.operations[0].id,
+                CurrentState: 'stopping',
+            };
+
+            cb(null, results);
+        }
+    });
+};
+
+
 const buildResponse = (err, results, cb) => {
     let response = {
         statusCode: 500,
@@ -53,6 +78,19 @@ exports.handler = (event, context) => {
 
         let instanceName = event.queryStringParameters.reference;
         startLightsailServer(
+            instanceName,
+            (err, results) => {
+                buildResponse(err, results, context.succeed);
+            }
+        );
+
+    } else if (event.queryStringParameters.hasOwnProperty('action') &&
+        event.queryStringParameters.hasOwnProperty('reference') &&
+        event.queryStringParameters.action === 'stop'
+    ) {
+
+        let instanceName = event.queryStringParameters.reference;
+        stopLightsailServer(
             instanceName,
             (err, results) => {
                 buildResponse(err, results, context.succeed);
