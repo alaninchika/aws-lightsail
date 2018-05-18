@@ -52,6 +52,29 @@ const stopLightsailServer = (name, cb) => {
     });
 };
 
+const statusLightsailServer = (name, cb) => {
+
+    let lightsail = new AWS.Lightsail();
+
+    let params = {
+        instanceName: name
+    };
+
+    lightsail.getInstanceState(params, function(err, data) {
+        if (err) {
+            console.log(err);
+            cb(err, []);
+        } else {
+
+            let results = {
+                CurrentState: data.state.name
+            };
+
+            cb(null, results);
+        }
+    });
+};
+
 
 const buildResponse = (err, results, cb) => {
     let response = {
@@ -91,6 +114,20 @@ exports.handler = (event, context) => {
 
         let instanceName = event.queryStringParameters.reference;
         stopLightsailServer(
+            instanceName,
+            (err, results) => {
+                buildResponse(err, results, context.succeed);
+            }
+        );
+
+    } else if (
+        event.queryStringParameters.hasOwnProperty('action') &&
+        event.queryStringParameters.hasOwnProperty('reference') &&
+        event.queryStringParameters.action === 'status'
+    ) {
+
+        let instanceName = event.queryStringParameters.reference;
+        statusLightsailServer(
             instanceName,
             (err, results) => {
                 buildResponse(err, results, context.succeed);
