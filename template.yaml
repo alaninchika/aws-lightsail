@@ -1,0 +1,45 @@
+Transform: 'AWS::Serverless-2016-10-31'
+Parameters:
+    AWSLightsail:
+        Description: "A microservice for AWS Lightsail."
+        Type: "String"
+    OriginUrl:
+        Description: "The origin url to allow CORS requests from. This will be the base URL of your static SAM website."
+        Type: "String"
+Resources:
+    LightsailLambdaTrustRole:
+        Description: Creating service role in IAM for AWS Lambda
+        Type: AWS::IAM::Role
+        Properties:
+            RoleName: lightsailLambdaRole
+            AssumeRolePolicyDocument:
+                Statement:
+                - Effect: Allow
+                  Principal:
+                    Service: [lambda.amazonaws.com]
+                  Action: sts:AssumeRole
+            Path: /
+            Policies:
+            - PolicyName: lightsailLambdaRolePolicy
+              PolicyDocument:
+                Version: '2012-10-17'
+                Statement:
+                - Effect: Allow
+                  Action: ["lightsail:StartInstance", "lightsail:StopInstance", "lightsail:GetInstanceState"]
+                  Resource: ["arn:aws:lightsail:*:*:instance/*"]
+    LightsailMicroservice:
+        Type: AWS::Serverless::Function
+        Properties:
+            Handler: index.handler
+            Role: !GetAtt LightsailLambdaTrustRole.Arn
+            Runtime: nodejs8.10
+            CodeUri: ./
+            Environment:
+                Variables:
+                    ORIGIN_URL: !Ref OriginUrl
+            Events:
+              GetResource:
+                Type: Api
+                Properties:
+                  Path: /lightsail
+                  Method: get
