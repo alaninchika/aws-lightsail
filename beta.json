@@ -1,3 +1,6 @@
 {
-
+    "Parameters": {
+        "AWSLIGHTSAIL": "1",
+        "OriginUrl": "*"
+    }
 }
