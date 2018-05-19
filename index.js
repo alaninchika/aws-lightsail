@@ -80,7 +80,7 @@ const buildResponse = (err, results, cb) => {
     let response = {
         statusCode: 500,
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({error: 'internal_error ' , data: err})
+        body: JSON.stringify({error: 'application error' , data: err})
     };
 
     if (!err) {
@@ -95,45 +95,36 @@ exports.handler = (event, context) => {
     if (!event.queryStringParameters) {
         buildResponse(null, [], context.succeed);
     } else if (event.queryStringParameters.hasOwnProperty('action') &&
-        event.queryStringParameters.hasOwnProperty('reference') &&
-        event.queryStringParameters.action === 'start'
+        event.queryStringParameters.hasOwnProperty('reference')
     ) {
 
         let instanceName = event.queryStringParameters.reference;
-        startLightsailServer(
-            instanceName,
-            (err, results) => {
-                buildResponse(err, results, context.succeed);
-            }
-        );
 
-    } else if (event.queryStringParameters.hasOwnProperty('action') &&
-        event.queryStringParameters.hasOwnProperty('reference') &&
-        event.queryStringParameters.action === 'stop'
-    ) {
-
-        let instanceName = event.queryStringParameters.reference;
-        stopLightsailServer(
-            instanceName,
-            (err, results) => {
-                buildResponse(err, results, context.succeed);
-            }
-        );
-
-    } else if (
-        event.queryStringParameters.hasOwnProperty('action') &&
-        event.queryStringParameters.hasOwnProperty('reference') &&
-        event.queryStringParameters.action === 'status'
-    ) {
-
-        let instanceName = event.queryStringParameters.reference;
-        statusLightsailServer(
-            instanceName,
-            (err, results) => {
-                buildResponse(err, results, context.succeed);
-            }
-        );
-
+        switch (event.queryStringParameters.action) {
+            case 'start':
+                startLightsailServer(
+                    instanceName,
+                    (err, results) => {
+                        buildResponse(err, results, context.succeed);
+                    }
+                );
+                break;
+            case 'stop':
+                stopLightsailServer(
+                    instanceName,
+                    (err, results) => {
+                        buildResponse(err, results, context.succeed);
+                    }
+                );
+                break;
+            default:
+                statusLightsailServer(
+                    instanceName,
+                    (err, results) => {
+                        buildResponse(err, results, context.succeed);
+                    }
+                );
+        }
     } else {
         buildResponse(null, [], context.succeed);
     }
