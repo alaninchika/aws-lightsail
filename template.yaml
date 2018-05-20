@@ -26,7 +26,7 @@ Resources:
                 Statement:
                 - Effect: Allow
                   Action: ["lightsail:StartInstance", "lightsail:StopInstance", "lightsail:GetInstanceState"]
-                  Resource: ["arn:aws:lightsail:*:*:instance/*"]
+                  Resource: ["*"]
     LightsailMicroservice:
         Type: AWS::Serverless::Function
         Properties:
