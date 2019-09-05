@@ -46,7 +46,7 @@
   },
   "dependencies": {
     "aws-sdk": "^2.149.0",
-    "axios": "^0.16.2"
+    "axios": ">=0.18.1"
   },
   "semistandard": {
     "rules": {
